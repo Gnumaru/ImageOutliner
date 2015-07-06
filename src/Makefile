@@ -161,13 +161,13 @@ AUTOMAKE = automake-1.14
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O0
+CFLAGS = -g -O2
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O0
+CXXFLAGS = -g -O2
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"ImageOutliner\" -DPACKAGE_TARNAME=\"imageoutliner\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"ImageOutliner\ 1.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DHAVE_LIBBOOST_PROGRAM_OPTIONS=1 -DHAVE_LIBX11=1 -DHAVE_LIBPTHREAD=1 -DHAVE_LIBPNG=1 -DPACKAGE=\"imageoutliner\" -DVERSION=\"1.0\"
+DEFS = -DPACKAGE_NAME=\"ImageOutliner\" -DPACKAGE_TARNAME=\"imageoutliner\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"ImageOutliner\ 1.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DHAVE_LIBBOOST_PROGRAM_OPTIONS=1 -DHAVE_LIBZ=1 -DHAVE_LIBPNG=1 -DPACKAGE=\"imageoutliner\" -DVERSION=\"1.0\"
 DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n
@@ -180,7 +180,7 @@ INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LDFLAGS = 
 LIBOBJS = 
-LIBS = -lpng -lpthread -lX11 -lboost_program_options 
+LIBS = -lpng -lz -lboost_program_options 
 LTLIBOBJS = 
 MAKEINFO = makeinfo
 MKDIR_P = /bin/mkdir -p
@@ -252,7 +252,10 @@ target_vendor = unknown
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-AM_CPPFLAGS = -Dcimg_use_png
+
+# the preprocessor flag "-Dcimg_display=0" prevents cimg from including x11 headers, since we do not want to exibhit any kind of image.
+# the preprocessor flag "-Dcimg_use_png" tells cimg to load pngs using libpng, so we can effectively load the image's alpha channel (we do need the alpha channel)
+AM_CPPFLAGS = -Dcimg_use_png -Dcimg_display=0
 a_out_SOURCES = main.cpp ImageOutliner.cpp CommandLineOptionsBoost.cpp
 all: all-am
 

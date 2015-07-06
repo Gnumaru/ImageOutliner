@@ -4,9 +4,8 @@ AC_PREREQ(2.59)
 AC_INIT(ImageOutliner, 1.0)
 
 AC_CHECK_LIB([boost_program_options], [main])
-# unfortunately, CImg requires booth X11 as pthread
-AC_CHECK_LIB([X11], [main])
-AC_CHECK_LIB([pthread], [main])
+# libpng needs zlib
+AC_CHECK_LIB([z], [main])
 # libpng is needed so CImg can read pngs with 4 channels (RGBA)
 # also, AM_CPPFLAGS=-Dcimg_use_png should be defined onto Makefile.am
 AC_CHECK_LIB([png], [main])
