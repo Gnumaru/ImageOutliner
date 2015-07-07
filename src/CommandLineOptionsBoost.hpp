@@ -31,6 +31,7 @@ namespace imageOutliner {
 			byte bitMask;
 			uint outlineColor;
 			uint backgroundColor;
+			uint backgroundColorMaxDeviance;
 		private:
 			// CONSTRUCTORS
 

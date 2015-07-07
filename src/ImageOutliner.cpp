@@ -40,11 +40,11 @@ namespace imageOutliner {
 					color[c] = *inputImg.data(x, y, z, c); // copy the pixel values for the four channels: r, g, b and a
 				}
 //				std::memcpy(&color, inputImg.data(x, y, z), sizeof(rgba)); // for some reason memcpy is not working
-				bool pixelIsBackgroundColor = isBackgroundColor(color);
-				if(pixelIsBackgroundColor){
+				bool pixelIsBackground = isBackgroundColor(color) || isWithinBackgroundColorTreshold(color);
+				if(pixelIsBackground){
 					backgroundPixels++;
 				}
-				if(pixelIsBackgroundColor && hasNonBackgroundNeighbour(&inputImg, x, y)){ // if pixel is a background one and at least one neighbour is not a background one
+				if(pixelIsBackground && hasNonBackgroundNeighbour(&inputImg, x, y)){ // if pixel is a background one and at least one neighbour is not a background one
 					borderPixels++;
 					std::memcpy(&color, &clo.outlineColor, sizeof(rgba)); // clo.outlineColor is an unsigned int (32 bits) and color is a rgba, which is a byte[4] which is a unsigned char[4] (32 bits), hence we can just copy the memory from one to another
 //					color[0] = (clo.outlineColor >> 24) & 0x000000FF; // put the red in the least significant byte
@@ -69,7 +69,7 @@ namespace imageOutliner {
 		std::cout << "generated image " + imgOutPath << std::endl;
 	}
 
-	bool ImageOutliner::isBackgroundColor(ci::CImg<byte>* img, int x, int y){
+	bool ImageOutliner::isStrictBackgroundColor(ci::CImg<byte>* img, int x, int y){
 		rgba color = {0, 0, 0, 0};
 		for(int c = 0; c < 4; c++){ // traverse channels
 			color[c] = *img->data(x, y, 0, c); // copy the pixel values for the four channels: r, g, b and a
@@ -77,11 +77,42 @@ namespace imageOutliner {
 		return isBackgroundColor(color);
 	}
 
+	byte ImageOutliner::getChannelValue(uint colorAsUInt32, char channel){
+		byte channelValue = 0;
+		if(channel == 'r'){
+			channelValue = getChannelValue(colorAsUInt32, (uint)0);
+		}else if(channel == 'g'){
+			channelValue = getChannelValue(colorAsUInt32, (uint)1);
+		}else if(channel == 'b'){
+			channelValue = getChannelValue(colorAsUInt32, (uint)2);
+		}else if(channel == 'a'){
+			channelValue = getChannelValue(colorAsUInt32, (uint)3);
+		}else{
+			throw std::invalid_argument("\"channel\" should be one of the folowing lowercase characters: 'r', 'g', 'b' or 'a'");
+		}
+		return channelValue;
+	}
+
+	bool ImageOutliner::isWithinBackgroundColorTreshold(rgba color){
+		uint deviance = 0;
+		for(int i = 0; i < 4; i++){
+			deviance += std::abs(color[i] - getChannelValue(clo.backgroundColor, (uint)i));
+		}
+		return deviance <= clo.backgroundColorMaxDeviance;
+	}
+
+	byte ImageOutliner::getChannelValue(uint colorAsUInt32, uint channelIndex){
+		if(channelIndex > 3){
+			throw std::invalid_argument("\"channel\" should be one 0, 1, 2 or 3.");
+		}
+		return (colorAsUInt32 << 8 * channelIndex) >> 24;
+	}
+
 	bool ImageOutliner::isBackgroundColor(rgba color){ // instead of using rgba wich is a byte[4], it is prefferable to use a byte* so we can get colors from a CImg directly
 		bool isBackground = true;
 		if(clo.vm.count("background") > 0){ // if no background color was provided check if pixel is equal to the provided background color
 			for(int i = 0; i < 4; i++){
-				byte channel = (clo.backgroundColor << 8 * i) >> 24; // shift left to get rid of unwanted upper bits, then shift right to position the desired byte in the lower 8 bits.
+				byte channel = getChannelValue(clo.backgroundColor, (uint)i);
 				byte currentColor = color[i];
 				if(currentColor != channel){
 					isBackground = false;
@@ -105,49 +136,49 @@ namespace imageOutliner {
 		// check up neighbour (colorize down pixel)
 		if((clo.bitMask & 128) == 128
 		        && y + 1 < img->height()
-		        && !isBackgroundColor(img, x, y + 1)){
+		        && !isStrictBackgroundColor(img, x, y + 1)){
 			itHas = true;
 
 			// check down neighbour (colorize up pixel)
 		}else if((clo.bitMask & 8) == 8
 		        && y - 1 >= 0
-		        && !isBackgroundColor(img, x, y - 1)){
+		        && !isStrictBackgroundColor(img, x, y - 1)){
 			itHas = true;
 
 			// check right neighbour (colorize left pixel)
 		}else if((clo.bitMask & 2) == 2
 		        && x + 1 < img->width()
-		        && !isBackgroundColor(img, x + 1, y)){
+		        && !isStrictBackgroundColor(img, x + 1, y)){
 			itHas = true;
 
 			// check left neighbour (colorize right pixel)
 		}else if((clo.bitMask & 32) == 32
 		        && x - 1 >= 0
-		        && !isBackgroundColor(img, x - 1, y)){
+		        && !isStrictBackgroundColor(img, x - 1, y)){
 			itHas = true;
 
 			// check upright neighbour (colorize downleft pixel)
 		}else if((clo.bitMask & 1) == 1
 		        && x + 1 < img->width() && y + 1 < img->height()
-		        && !isBackgroundColor(img, x + 1, y + 1)){
+		        && !isStrictBackgroundColor(img, x + 1, y + 1)){
 			itHas = true;
 
 			// check upleft neighbour (colorize downright pixel)
 		}else if((clo.bitMask & 64) == 64
 		        && x - 1 >= 0 && y + 1 < img->height()
-		        && !isBackgroundColor(img, x - 1, y + 1)){
+		        && !isStrictBackgroundColor(img, x - 1, y + 1)){
 			itHas = true;
 
 			// check downleft neighbour (colorize upright pixel)
 		}else if((clo.bitMask & 16) == 16
 		        && x - 1 >= 0 && y - 1 >= 0
-		        && !isBackgroundColor(img, x - 1, y - 1)){
+		        && !isStrictBackgroundColor(img, x - 1, y - 1)){
 			itHas = true;
 
 			// check downright neighbour (colorize upleft pixel)
 		}else if((clo.bitMask & 4) == 4
 		        && x + 1 < img->width() && y - 1 >= 0
-		        && !isBackgroundColor(img, x + 1, y - 1)){
+		        && !isStrictBackgroundColor(img, x + 1, y - 1)){
 			itHas = true;
 		}
 

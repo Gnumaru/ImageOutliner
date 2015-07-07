@@ -19,7 +19,7 @@ namespace imageOutliner {
 	
 	CommandLineOptionsBoost::CommandLineOptionsBoost(int argc, char* argv[])
 	:
-			argc(argc), argv(argv), desc(NULL), bpo(NULL), bitMask(255), outlineColor(0xFFFFFFFF), backgroundColor(0x00000000)
+			argc(argc), argv(argv), desc(NULL), bpo(NULL), bitMask(255), outlineColor(0xFFFFFFFF), backgroundColor(0x00000000), backgroundColorMaxDeviance(0)
 	{
 		setAvailableCommandLineOptions();
 		parseCommandLine();

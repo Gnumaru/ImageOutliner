@@ -40,7 +40,10 @@ namespace imageOutliner {
 			// METHODS
 			bool hasNonBackgroundNeighbour(ci::CImg<byte>* img, int x, int y);
 			bool isBackgroundColor(rgba color);
-			bool isBackgroundColor(ci::CImg<byte>* img, int x, int y);
+			bool isStrictBackgroundColor(ci::CImg<byte>* img, int x, int y);
+			bool isWithinBackgroundColorTreshold(rgba color);
+			byte getChannelValue(uint colorAsUInt32, char channel);
+			byte getChannelValue(uint colorAsUInt32, uint channel);
 	};
 
 } /* namespace randomImageTileGenerator */
