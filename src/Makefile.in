@@ -79,7 +79,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = a.out$(EXEEXT)
+bin_PROGRAMS = image_outliner$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
@@ -92,10 +92,10 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_a_out_OBJECTS = main.$(OBJEXT) ImageOutliner.$(OBJEXT) \
+am_image_outliner_OBJECTS = main.$(OBJEXT) ImageOutliner.$(OBJEXT) \
 	CommandLineOptionsBoost.$(OBJEXT)
-a_out_OBJECTS = $(am_a_out_OBJECTS)
-a_out_LDADD = $(LDADD)
+image_outliner_OBJECTS = $(am_image_outliner_OBJECTS)
+image_outliner_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -125,8 +125,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(a_out_SOURCES)
-DIST_SOURCES = $(a_out_SOURCES)
+SOURCES = $(image_outliner_SOURCES)
+DIST_SOURCES = $(image_outliner_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -256,7 +256,7 @@ top_srcdir = @top_srcdir@
 # the preprocessor flag "-Dcimg_display=0" prevents cimg from including x11 headers, since we do not want to exibhit any kind of image.
 # the preprocessor flag "-Dcimg_use_png" tells cimg to load pngs using libpng, so we can effectively load the image's alpha channel (we do need the alpha channel)
 AM_CPPFLAGS = -Dcimg_use_png -Dcimg_display=0
-a_out_SOURCES = main.cpp ImageOutliner.cpp CommandLineOptionsBoost.cpp
+image_outliner_SOURCES = main.cpp ImageOutliner.cpp CommandLineOptionsBoost.cpp
 all: all-am
 
 .SUFFIXES:
@@ -334,9 +334,9 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-a.out$(EXEEXT): $(a_out_OBJECTS) $(a_out_DEPENDENCIES) $(EXTRA_a_out_DEPENDENCIES) 
-	@rm -f a.out$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(a_out_OBJECTS) $(a_out_LDADD) $(LIBS)
+image_outliner$(EXEEXT): $(image_outliner_OBJECTS) $(image_outliner_DEPENDENCIES) $(EXTRA_image_outliner_DEPENDENCIES) 
+	@rm -f image_outliner$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(image_outliner_OBJECTS) $(image_outliner_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
