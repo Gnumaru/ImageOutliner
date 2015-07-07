@@ -30,6 +30,7 @@ namespace imageOutliner {
 			po::variables_map vm;
 			byte bitMask;
 			uint outlineColor;
+			uint backgroundColor;
 		private:
 			// CONSTRUCTORS
 

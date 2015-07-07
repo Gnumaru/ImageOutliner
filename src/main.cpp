@@ -16,7 +16,6 @@
 #define CIMG_USE_PNG
 #endif
 
-
 #include <ImageOutliner.hpp>
 
 namespace imo = imageOutliner;

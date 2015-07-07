@@ -38,7 +38,9 @@ namespace imageOutliner {
 			CommandLineOptionsBoost clo;
 
 			// METHODS
-			bool hasOpaqueNeighbour(ci::CImg<byte>* img, int x, int y);
+			bool hasNonBackgroundNeighbour(ci::CImg<byte>* img, int x, int y);
+			bool isBackgroundColor(rgba color);
+			bool isBackgroundColor(ci::CImg<byte>* img, int x, int y);
 	};
 
 } /* namespace randomImageTileGenerator */

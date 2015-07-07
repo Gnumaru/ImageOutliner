@@ -161,13 +161,13 @@ AUTOMAKE = automake-1.14
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
+CFLAGS = -g -O0
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXFLAGS = -g -O0
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"ImageOutliner\" -DPACKAGE_TARNAME=\"imageoutliner\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"ImageOutliner\ 1.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DHAVE_LIBBOOST_PROGRAM_OPTIONS=1 -DHAVE_LIBZ=1 -DHAVE_LIBPNG=1 -DPACKAGE=\"imageoutliner\" -DVERSION=\"1.0\"
+DEFS = -DPACKAGE_NAME=\"ImageOutliner\" -DPACKAGE_TARNAME=\"imageoutliner\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"ImageOutliner\ 1.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DHAVE_LIBBOOST_PROGRAM_OPTIONS=1 -DHAVE_LIBZ=1 -DHAVE_LIBPTHREAD=1 -DHAVE_LIBPNG=1 -DPACKAGE=\"imageoutliner\" -DVERSION=\"1.0\"
 DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n
@@ -180,7 +180,7 @@ INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LDFLAGS = 
 LIBOBJS = 
-LIBS = -lpng -lz -lboost_program_options 
+LIBS = -lpng -lpthread -lz -lboost_program_options 
 LTLIBOBJS = 
 MAKEINFO = makeinfo
 MKDIR_P = /bin/mkdir -p
