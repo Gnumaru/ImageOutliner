@@ -1,4 +1,5 @@
 /*
+
  * CommandLineOptionsBoost.cpp
  *
  *  Created on: 18/06/2015
@@ -39,7 +40,7 @@ namespace imageOutliner {
 
 		if(vm.count("help") > 0){
 			// print the help and forcefully terminates the program here
-			std::cout << desc << std::endl;
+			std::cout << *desc << std::endl;
 			std::exit(0);
 		}else if(vm.count("input") == 0){
 			// print the help and forcefully terminates the program here
@@ -113,13 +114,13 @@ namespace imageOutliner {
 		desc = new po::options_description("Available options:");
 		desc->add_options()
 		("help,h", "Bring up this help page.")
-		("input,i", po::value<std::string>(), "The image to be outlined. Eg.: -iInputImage")
-		("output,o", po::value<std::string>(), "The generated png file name, without extension. Eg.: -oOutputImage")
+		("input,i", po::value<std::string>(), "The image to be outlined.\r\nEg.: -iInputImage")
+		("output,o", po::value<std::string>(), "The generated png file name, without extension.\r\nEg.: -oOutputImage")
 		("mask,m", po::value<std::string>(),
-		        "A bitmask (integer or binary string) telling wich pixels should be taken into account when outlining. Bits start at up neighbour and continue clockwise until upleft neighbour, exactly 8. Eg.: -m10101010 or -m192")
+		        "A bitmask (integer or binary string) telling wich pixels should be taken into account when outlining. Bits start at up neighbour and continue clockwise until upleft neighbour, exactly 8.\r\nEg.: -m10101010 or -m192")
 		("color,c", po::value<std::string>(),
-		        "The RGBA color to be used as outline, provided in hex RGBA format, as in \"FFCC66FF\". If not provided by command line, defaults to fully opaque completely white (FFFFFFFF). Eg.: -cFEDCBA98")
+		        "The RGBA color to be used as outline, provided in hex RGBA format, as in \"FFCC66FF\". If not provided by command line, defaults to fully opaque completely white (FFFFFFFF).\r\nEg.: -cFEDCBA98")
 		("background,b", po::value<std::string>(),
-		        "The RGBA color to be used as background, provided in hex RGBA format, as in \"FFCC66FF\". If not provided by command line, defaults to color independente completely transparent (xxxxxx00). Eg.: -cFEDCBA98");
+		        "The RGBA color to be used as background, provided in hex RGBA format, as in \"FFCC66FF\". If not provided by command line, defaults to color independente completely transparent (xxxxxx00).\r\nEg.: -bFEDCBA98");
 	}
 } /* namespace RandomImageTileGenerator */
