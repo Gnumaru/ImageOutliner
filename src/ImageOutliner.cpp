@@ -39,14 +39,14 @@ namespace imageOutliner {
 				for(int c = 0; c < 4; c++){ // traverse channels
 					color[c] = *inputImg.data(x, y, z, c); // copy the pixel values for the four channels: r, g, b and a
 				}
-//				std::memcpy(&color, inputImg.data(x, y, z), sizeof(rgba)); // for some reason memcpy is not working
+//				std::memcpy(&color, inputImg.data(x, y, z), 4); // for some reason memcpy is not working
 				bool pixelIsBackground = isBackgroundColor(color) || isWithinBackgroundColorTreshold(color);
 				if(pixelIsBackground){
 					backgroundPixels++;
 				}
 				if(pixelIsBackground && hasNonBackgroundNeighbour(&inputImg, x, y)){ // if pixel is a background one and at least one neighbour is not a background one
 					borderPixels++;
-//					std::memcpy(&color, &clo.outlineColor, sizeof(byte) * 4); // memcpy is just not working, even though it should, leaving here just so anyone knows that
+//					std::memcpy(&color, &clo.outlineColor, 4); // memcpy is just not working, even though it should, leaving here just so anyone knows that
 					color[0] = clo.outlineColor >> 24; // put the red in the least significant byte
 					color[1] = (clo.outlineColor << 8) >> 24; // put the green in the least significant byte
 					color[2] = (clo.outlineColor << 16) >> 24; // put the blue in the least significant byte
