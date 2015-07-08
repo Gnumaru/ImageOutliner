@@ -32,6 +32,8 @@ namespace imageOutliner {
 			uint outlineColor;
 			uint backgroundColor;
 			uint backgroundColorMaxDeviance;
+			std::string output;
+			std::string input;
 		private:
 			// CONSTRUCTORS
 
