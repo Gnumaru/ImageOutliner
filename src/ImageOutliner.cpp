@@ -22,7 +22,7 @@ namespace imageOutliner {
 	}
 
 	void ImageOutliner::outlineImage(){
-		std::string imgPath = clo.vm["input"].as<std::string>();
+		std::string imgPath = clo.input;
 		ci::CImg<byte> inputImg(imgPath.c_str());
 		ci::CImg<byte> newImg(inputImg.width(), inputImg.height(), 1, 4, 0);
 		int width = inputImg.width();
@@ -46,11 +46,11 @@ namespace imageOutliner {
 				}
 				if(pixelIsBackground && hasNonBackgroundNeighbour(&inputImg, x, y)){ // if pixel is a background one and at least one neighbour is not a background one
 					borderPixels++;
-					std::memcpy(&color, &clo.outlineColor, sizeof(rgba)); // clo.outlineColor is an unsigned int (32 bits) and color is a rgba, which is a byte[4] which is a unsigned char[4] (32 bits), hence we can just copy the memory from one to another
-//					color[0] = (clo.outlineColor >> 24) & 0x000000FF; // put the red in the least significant byte
-//					color[1] = (clo.outlineColor >> 16) & 0x000000FF; // put the green in the least significant byte
-//					color[2] = (clo.outlineColor >> 8) & 0x000000FF; // put the blue in the least significant byte
-//					color[3] = clo.outlineColor & 0x000000FF; // put the alpha in the least significant byte
+//					std::memcpy(&color, &clo.outlineColor, sizeof(byte) * 4); // memcpy is just not working, even though it should, leaving here just so anyone knows that
+					color[0] = clo.outlineColor >> 24; // put the red in the least significant byte
+					color[1] = (clo.outlineColor << 8) >> 24; // put the green in the least significant byte
+					color[2] = (clo.outlineColor << 16) >> 24; // put the blue in the least significant byte
+					color[3] = (clo.outlineColor << 24) >> 24; // put the alpha in the least significant byte
 					newImg.draw_point(x, y, color);
 				}else{
 					newImg.draw_point(x, y, color);
@@ -60,12 +60,7 @@ namespace imageOutliner {
 		std::cout << backgroundPixels << " pixels where of background color." << std::endl;
 		std::cout << borderPixels << " of them where border pixels and where coloured." << std::endl;
 		std::string imgOutPath = "";
-		if(clo.vm.count("output") > 0){
-			imgOutPath = clo.vm["output"].as<std::string>() + ".png";
-		}else{
-			imgOutPath = imgPath + ".mod.png";
-		}
-		newImg.save(imgOutPath.c_str());
+		newImg.save(clo.output.c_str());
 		std::cout << "generated image " + imgOutPath << std::endl;
 	}
 
@@ -80,13 +75,13 @@ namespace imageOutliner {
 	byte ImageOutliner::getChannelValue(uint colorAsUInt32, char channel){
 		byte channelValue = 0;
 		if(channel == 'r'){
-			channelValue = getChannelValue(colorAsUInt32, (uint)0);
+			channelValue = getChannelValue(colorAsUInt32, (uint) 0);
 		}else if(channel == 'g'){
-			channelValue = getChannelValue(colorAsUInt32, (uint)1);
+			channelValue = getChannelValue(colorAsUInt32, (uint) 1);
 		}else if(channel == 'b'){
-			channelValue = getChannelValue(colorAsUInt32, (uint)2);
+			channelValue = getChannelValue(colorAsUInt32, (uint) 2);
 		}else if(channel == 'a'){
-			channelValue = getChannelValue(colorAsUInt32, (uint)3);
+			channelValue = getChannelValue(colorAsUInt32, (uint) 3);
 		}else{
 			throw std::invalid_argument("\"channel\" should be one of the folowing lowercase characters: 'r', 'g', 'b' or 'a'");
 		}
@@ -96,7 +91,7 @@ namespace imageOutliner {
 	bool ImageOutliner::isWithinBackgroundColorTreshold(rgba color){
 		uint deviance = 0;
 		for(int i = 0; i < 4; i++){
-			deviance += std::abs(color[i] - getChannelValue(clo.backgroundColor, (uint)i));
+			deviance += std::abs(color[i] - getChannelValue(clo.backgroundColor, (uint) i));
 		}
 		return deviance <= clo.backgroundColorMaxDeviance;
 	}
@@ -112,7 +107,7 @@ namespace imageOutliner {
 		bool isBackground = true;
 		if(clo.vm.count("background") > 0){ // if no background color was provided check if pixel is equal to the provided background color
 			for(int i = 0; i < 4; i++){
-				byte channel = getChannelValue(clo.backgroundColor, (uint)i);
+				byte channel = getChannelValue(clo.backgroundColor, (uint) i);
 				byte currentColor = color[i];
 				if(currentColor != channel){
 					isBackground = false;

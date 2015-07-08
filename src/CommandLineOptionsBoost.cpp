@@ -50,12 +50,13 @@ namespace imageOutliner {
 		if(vm.count("input") > 1){
 			std::cout << "Only one input should be specified. See help for further details." << std::endl;
 			std::cout << *desc << std::endl;
+
 			std::exit(0);
 		}else if(vm.count("input") == 1){
-
-		}else{
+			input = vm["input"].as<std::string>();
+		}else{ //  if(vm.count("input") < 1){
 			// print the help and forcefully terminates the program here
-			std::cout << "At least one (and only one) source image must be provided. See help for further details." << std::endl;
+			std::cout << "At least one source image must be specified. See help for further details." << std::endl;
 			std::cout << *desc << std::endl;
 			std::exit(0);
 		}
@@ -64,10 +65,10 @@ namespace imageOutliner {
 			std::cout << "Only one output should be specified. See help for further details." << std::endl;
 			std::cout << *desc << std::endl;
 			std::exit(0);
-		}else if(vm.count("output") == 0){
-			output = vm["input"].as<std::string>() + "_out.png";
-		}else{
+		}else if(vm.count("output") == 1){
 			output = vm["output"].as<std::string>() + ".png";
+		}else{ //  if(vm.count("output") < 1){
+			output = vm["input"].as<std::string>() + "_out.png";
 		}
 
 		if(vm.count("mask") > 1){
@@ -95,7 +96,11 @@ namespace imageOutliner {
 		// else, constructor already defines bitMask as 170 (binary 10101010, hex AA)
 		std::printf("using bitmask %d (%u).\r\n", bitMask, bitMask);
 
-		if(vm.count("color") > 0){
+		if(vm.count("color") > 1){
+			std::cout << "Only one outline color should be specified. See help for further details." << std::endl;
+			std::cout << *desc << std::endl;
+			std::exit(0);
+		}else if(vm.count("color") == 1){
 			std::string colorString = vm["color"].as<std::string>();
 			const char* invalidColorkMsg = "'color' must be provided as a 4 byte hex color string, as in \"A5E6D7FF\"";
 			if(colorString.length() == 8){ // try to parse binary mask
@@ -111,9 +116,15 @@ namespace imageOutliner {
 			}else{
 				throw std::invalid_argument(invalidColorkMsg);
 			}
+		}else{ // constructor already defines outlineColor as 0xFFFFFFFF
+			std::printf("using border color \"255, 255, 255, 255\" (0xFFFFFFFF, decimal 4294967295).\r\n");
 		}
 
-		if(vm.count("background") > 0){
+		if(vm.count("background") > 1){
+			std::cout << "Only one background color should be specified. See help for further details." << std::endl;
+			std::cout << *desc << std::endl;
+			std::exit(0);
+		}else if(vm.count("background") == 1){
 			std::string backgroundColorString = vm["background"].as<std::string>();
 			const char* invalidColorkMsg = "'backgroundColorString' must be provided as a 4 byte hex color string, as in \"A5E6D7FF\"";
 			if(backgroundColorString.length() == 8){
